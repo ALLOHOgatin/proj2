@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMG — Tout au même endroit</title>
+  <style>
+    :root{
+      --primary:#6c4df6; --primary2:#8b5cf6; --dark:#15151d; --muted:#6b7280;
+      --bg:#f6f7fb; --card:#fff; --border:#e8e8ef; --success:#16a34a;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--dark)}
+    button,input,select{font:inherit}
+    button{cursor:pointer;border:0}
+    header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border)}
+    .top{max-width:1250px;margin:auto;padding:15px 22px;display:flex;align-items:center;gap:20px}
+    .logo{font-size:30px;font-weight:900;color:var(--primary);letter-spacing:-2px}
+    .search{flex:1;display:flex;background:#f1f2f7;border-radius:14px;overflow:hidden}
+    .search input{width:100%;border:0;outline:0;background:transparent;padding:13px 16px}
+    .search button{background:var(--primary);color:#fff;padding:0 19px}
+    .head-actions{display:flex;gap:9px}
+    .icon-btn{background:#f1f2f7;padding:11px 13px;border-radius:12px;position:relative}
+    .badge{position:absolute;top:-5px;right:-5px;background:#ef4444;color:white;font-size:11px;min-width:19px;height:19px;border-radius:50%;display:grid;place-items:center}
+    nav{border-top:1px solid #f2f2f5}
+    .nav-inner{max-width:1250px;margin:auto;padding:10px 22px;display:flex;gap:9px;overflow:auto}
+    .cat-btn{background:transparent;padding:9px 13px;border-radius:10px;white-space:nowrap;color:#4b5563}
+    .cat-btn:hover,.cat-btn.active{background:#eeeafe;color:var(--primary);font-weight:700}
+    main{max-width:1250px;margin:auto;padding:25px 22px 60px}
+    .hero{border-radius:24px;overflow:hidden;padding:45px;min-height:330px;background:linear-gradient(120deg,#171722,#38257d 55%,#8b5cf6);color:white;display:flex;align-items:center;justify-content:space-between;gap:30px}
+    .hero h1{font-size:clamp(35px,5vw,65px);line-height:1;max-width:650px;letter-spacing:-3px}
+    .hero p{margin:18px 0 25px;color:#e9e7ff;font-size:18px;max-width:560px}
+    .cta{background:white;color:#5b3ee4;padding:13px 19px;border-radius:12px;font-weight:800}
+    .hero-art{font-size:110px;filter:drop-shadow(0 20px 30px #0005)}
+    .section-head{display:flex;justify-content:space-between;align-items:center;margin:35px 0 17px}
+    .section-head h2{font-size:27px}
+    .count{color:var(--muted);font-size:14px}
+    .products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .product{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:.2s;position:relative}
+    .product:hover{transform:translateY(-4px);box-shadow:0 15px 35px #1c1c2b10}
+    .product-img{height:190px;background:linear-gradient(135deg,#f4f0ff,#f8fafc);display:grid;place-items:center;overflow:hidden}.product-img img{width:100%;height:100%;object-fit:contain;padding:14px;transition:.25s}.product:hover .product-img img{transform:scale(1.05)}
+    .heart{position:absolute;right:11px;top:11px;background:#fff;width:36px;height:36px;border-radius:50%;box-shadow:0 3px 12px #0001}
+    .heart.active{color:#ef4444}
+    .product-body{padding:15px}
+    .tag{display:inline-block;font-size:11px;background:#eeeafe;color:var(--primary);padding:5px 8px;border-radius:7px;margin-bottom:8px;font-weight:700}
+    .product h3{font-size:16px;margin-bottom:7px}
+    .stars{font-size:13px;color:#f59e0b;margin-bottom:9px}
+    .price{font-size:20px;font-weight:900}
+    .old{font-size:13px;color:#9ca3af;text-decoration:line-through;margin-left:6px;font-weight:400}
+    .add{width:100%;margin-top:12px;background:var(--dark);color:white;padding:11px;border-radius:10px;font-weight:700}
+    .add:hover{background:var(--primary)}
+    .empty{text-align:center;background:#fff;padding:55px;border-radius:18px;color:var(--muted);grid-column:1/-1}
+    footer{background:#17171f;color:#ddd;padding:40px 22px}
+    .footer-inner{max-width:1250px;margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px}
+    footer h3{color:white;margin-bottom:13px}
+    footer p,footer li{color:#a8a8b5;font-size:14px;line-height:1.8;list-style:none}
+    .cart-panel{position:fixed;right:-430px;top:0;width:min(430px,100%);height:100vh;background:#fff;z-index:100;box-shadow:-15px 0 40px #0002;transition:.3s;display:flex;flex-direction:column}
+    .cart-panel.open{right:0}
+    .cart-head{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+    .cart-items{padding:18px;overflow:auto;flex:1}
+    .cart-item{display:grid;grid-template-columns:65px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center}
+    .cart-item-img{width:65px;height:65px;border-radius:12px;background:#f2f1fa;display:grid;place-items:center;overflow:hidden}.cart-item-img img{width:100%;height:100%;object-fit:contain;padding:5px}
+    .cart-item h4{font-size:14px}
+    .qty{display:flex;align-items:center;gap:8px;margin-top:8px}
+    .qty button{width:24px;height:24px;border-radius:6px;background:#eee}
+    .remove{color:#ef4444;background:transparent;font-size:12px;margin-top:6px}
+    .cart-foot{padding:18px;border-top:1px solid var(--border)}
+    .total{display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin-bottom:14px}
+    .checkout{width:100%;padding:14px;background:var(--primary);color:white;border-radius:11px;font-weight:800}
+    .overlay{position:fixed;inset:0;background:#0006;z-index:90;display:none}
+    .overlay.show{display:block}
+    .toast{position:fixed;right:20px;bottom:20px;background:#18181f;color:white;padding:13px 17px;border-radius:11px;z-index:200;opacity:0;transform:translateY(15px);transition:.25s}
+    .toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:950px){.products{grid-template-columns:repeat(3,1fr)}.hero-art{font-size:75px}.footer-inner{grid-template-columns:1fr 1fr}}
+    @media(max-width:700px){.top{flex-wrap:wrap}.search{order:3;flex-basis:100%}.products{grid-template-columns:repeat(2,1fr)}.hero{padding:30px;min-height:300px}.hero-art{display:none}}
+    @media(max-width:450px){.products{grid-template-columns:1fr}.hero h1{font-size:39px}.footer-inner{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <div class="logo">AMG</div>
+    <div class="search">
+      <input id="search" type="search" placeholder="Rechercher un produit...">
+      <button onclick="filterProducts()">🔎</button>
+    </div>
+    <div class="head-actions">
+      <button class="icon-btn" onclick="showFavorites()">♡</button>
+      <button class="icon-btn" onclick="openCart()">🛒<span class="badge" id="cartCount">0</span></button>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-inner">
+      <button class="cat-btn active" data-cat="Tous">Tous</button>
+      <button class="cat-btn" data-cat="Informatique">💻 Informatique</button>
+      <button class="cat-btn" data-cat="Téléphones">📱 Téléphones</button>
+      <button class="cat-btn" data-cat="Mode">👕 Mode</button>
+      <button class="cat-btn" data-cat="Maison">🏠 Maison</button>
+      <button class="cat-btn" data-cat="Sport">⚽ Sport</button>
+      <button class="cat-btn" data-cat="Beauté">✨ Beauté</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>Tout ce que tu veux, au même endroit.</h1>
+      <p>Bienvenue sur AMG, ta marketplace pour découvrir des produits du quotidien, de la tech, de la mode et bien plus.</p>
+      <button class="cta" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Découvrir les produits →</button>
+    </div>
+    <div class="hero-art">🛍️</div>
+  </section>
+
+  <div class="section-head">
+    <h2>Nos produits</h2>
+    <span class="count" id="count"></span>
+  </div>
+
+  <section class="products" id="products"></section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div><h3>AMG</h3><p>Une boutique en ligne moderne pour trouver un peu de tout, au même endroit.</p></div>
+    <div><h3>Boutique</h3><ul><li>Informatique</li><li>Téléphones</li><li>Mode</li><li>Maison</li></ul></div>
+    <div><h3>Service</h3><ul><li>Livraison</li><li>Retours</li><li>Contact</li><li>FAQ</li></ul></div>
+    <div><h3>Contact</h3><p>contact@amg-shop.fr</p><p>📍 France</p></div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+<aside class="cart-panel" id="cartPanel">
+  <div class="cart-head">
+    <h2>🛒 Mon panier</h2>
+    <button onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="total"><span>Total</span><span id="total">0,00 €</span></div>
+    <button class="checkout" onclick="checkout()">Passer la commande</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+  {id:1,name:"iPhone 15",cat:"Téléphones",price:699,old:799,icon:"📱",rating:5,image:'https://images.unsplash.com/photo-1592286927505-2fd0d9b7a4a4?auto=format&fit=crop&w=700&q=85'},
+  {id:2,name:"Samsung Galaxy S24",cat:"Téléphones",price:649,old:749,icon:"📱",rating:5,image:'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=700&q=85'},
+  {id:3,name:"Casque Bluetooth Pro",cat:"Informatique",price:59.99,old:89.99,icon:"🎧",rating:4,image:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=700&q=85'},
+  {id:4,name:"PC Portable 15\"",cat:"Informatique",price:749,old:899,icon:"💻",rating:4,image:'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=85'},
+  {id:5,name:"Clavier mécanique RGB",cat:"Informatique",price:69.90,icon:"⌨️",rating:5,image:'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=700&q=85'},
+  {id:6,name:"Souris gaming",cat:"Informatique",price:39.90,icon:"🖱️",rating:4,image:'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=700&q=85'},
+  {id:7,name:"Sneakers Urban",cat:"Mode",price:79.90,old:99.90,icon:"👟",rating:5,image:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=85'},
+  {id:8,name:"Sweat AMG Classic",cat:"Mode",price:44.90,icon:"👕",rating:4,image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=85'},
+  {id:9,name:"Sac à dos Premium",cat:"Mode",price:54.90,icon:"🎒",rating:5,image:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=85'},
+  {id:10,name:"Montre connectée",cat:"Mode",price:89.90,old:119.90,icon:"⌚",rating:4,image:'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=700&q=85'},
+  {id:11,name:"Lampe LED Design",cat:"Maison",price:29.90,icon:"💡",rating:4,image:'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=700&q=85'},
+  {id:12,name:"Machine à café",cat:"Maison",price:119,old:149,icon:"☕",rating:5,image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=85'},
+  {id:13,name:"Fauteuil confortable",cat:"Maison",price:179,icon:"🪑",rating:4,image:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=700&q=85'},
+  {id:14,name:"Ballon de football",cat:"Sport",price:24.90,icon:"⚽",rating:5,image:'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=700&q=85'},
+  {id:15,name:"Haltères 10 kg",cat:"Sport",price:34.90,icon:"🏋️",rating:4,image:'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=700&q=85'},
+  {id:16,name:"Tapis de sport",cat:"Sport",price:22.90,icon:"🧘",rating:5,image:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=700&q=85'},
+  {id:17,name:"Parfum Élégance",cat:"Beauté",price:69.90,old:84.90,icon:"🧴",rating:5,image:'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=700&q=85'},
+  {id:18,name:"Kit soin visage",cat:"Beauté",price:34.90,icon:"✨",rating:4,image:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=700&q=85'},
+  {id:19,name:"Lunettes de soleil",cat:"Mode",price:29.90,icon:"🕶️",rating:4,image:'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=700&q=85'},
+  {id:20,name:"Enceinte Bluetooth",cat:"Informatique",price:49.90,icon:"🔊",rating:5,image:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=700&q=85'}
+];
+
+let cart = JSON.parse(localStorage.getItem("amgCart") || "[]");
+let favorites = JSON.parse(localStorage.getItem("amgFav") || "[]");
+let currentCategory = "Tous";
+
+function euro(n){return n.toLocaleString("fr-FR",{style:"currency",currency:"EUR"})}
+
+function renderProducts(list=products){
+  const box=document.getElementById("products");
+  document.getElementById("count").textContent=list.length+" produit"+(list.length>1?"s":"");
+  if(!list.length){box.innerHTML='<div class="empty">😕 Aucun produit trouvé.<br><br>Essaie une autre recherche.</div>';return}
+  box.innerHTML=list.map(p=>`
+    <article class="product">
+      <button class="heart ${favorites.includes(p.id)?"active":""}" onclick="toggleFav(${p.id})">${favorites.includes(p.id)?"♥":"♡"}</button>
+      <div class="product-img"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
+      <div class="product-body">
+        <span class="tag">${p.cat}</span>
+        <h3>${p.name}</h3>
+        <div class="stars">${"★".repeat(p.rating)}${"☆".repeat(5-p.rating)}</div>
+        <span class="price">${euro(p.price)}</span>${p.old?`<span class="old">${euro(p.old)}</span>`:""}
+        <button class="add" onclick="addToCart(${p.id})">Ajouter au panier</button>
+      </div>
+    </article>`).join("");
+}
+
+function addToCart(id){
+  const item=cart.find(x=>x.id===id);
+  if(item)item.qty++;
+  else cart.push({id,qty:1});
+  saveCart(); updateCart(); toast("Produit ajouté au panier 🛒");
+}
+function saveCart(){localStorage.setItem("amgCart",JSON.stringify(cart))}
+function updateCart(){
+  const count=cart.reduce((a,x)=>a+x.qty,0);
+  document.getElementById("cartCount").textContent=count;
+  const box=document.getElementById("cartItems");
+  if(!cart.length){box.innerHTML='<div class="empty">Votre panier est vide 🛒</div>';document.getElementById("total").textContent=euro(0);return}
+  let total=0;
+  box.innerHTML=cart.map(item=>{
+    const p=products.find(x=>x.id===item.id), sub=p.price*item.qty; total+=sub;
+    return `<div class="cart-item">
+      <div class="cart-item-img"><img src="${p.image}" alt="${p.name}"></div>
+      <div><h4>${p.name}</h4><strong>${euro(p.price)}</strong>
+      <div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${item.qty}</span><button onclick="changeQty(${p.id},1)">+</button></div>
+      <button class="remove" onclick="removeCart(${p.id})">Supprimer</button></div>
+      <strong>${euro(sub)}</strong>
+    </div>`;
+  }).join("");
+  document.getElementById("total").textContent=euro(total);
+}
+function changeQty(id,d){
+  const item=cart.find(x=>x.id===id); if(!item)return;
+  item.qty+=d;if(item.qty<=0)cart=cart.filter(x=>x.id!==id);
+  saveCart();updateCart();
+}
+function removeCart(id){cart=cart.filter(x=>x.id!==id);saveCart();updateCart()}
+function openCart(){document.getElementById("cartPanel").classList.add("open");document.getElementById("overlay").classList.add("show");updateCart()}
+function closeCart(){document.getElementById("cartPanel").classList.remove("open");document.getElementById("overlay").classList.remove("show")}
+function toggleFav(id){
+  favorites.includes(id)?favorites=favorites.filter(x=>x!==id):favorites.push(id);
+  localStorage.setItem("amgFav",JSON.stringify(favorites));renderProducts(getFiltered());toast(favorites.includes(id)?"Ajouté aux favoris ❤️":"Retiré des favoris");
+}
+function showFavorites(){
+  const list=products.filter(p=>favorites.includes(p.id));
+  renderProducts(list);document.getElementById("products").scrollIntoView({behavior:"smooth"});
+}
+function getFiltered(){
+  const q=document.getElementById("search").value.toLowerCase().trim();
+  return products.filter(p=>(currentCategory==="Tous"||p.cat===currentCategory)&&(p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)));
+}
+function filterProducts(){renderProducts(getFiltered())}
+document.getElementById("search").addEventListener("input",filterProducts);
+document.querySelectorAll(".cat-btn").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".cat-btn").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");currentCategory=btn.dataset.cat;renderProducts(getFiltered());
+}));
+function toast(msg){
+  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
+}
+function checkout(){
+  if(!cart.length){toast("Ton panier est vide 😅");return}
+  toast("Démo : commande prête à être validée ✅");
+}
+renderProducts();updateCart();
+</script>
+</body>
+</html>
